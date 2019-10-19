@@ -4,7 +4,6 @@
  */
 #include "QuadEncoder.h"
 #include <CppUtil.h>
-#include <math.h>
 
 /**
  * @brief Constructs quad encoder interface
@@ -39,7 +38,7 @@ float QuadEncoder::get_angle()
 	float angle = counts_copy * rad_per_cnt;
 	if (wrap_angle)
 	{
-		angle = mod_limit(angle, -M_PI, +M_PI);
+		angle = Util::wrap(angle, -M_PI, +M_PI);
 	}
 	return angle;
 }
