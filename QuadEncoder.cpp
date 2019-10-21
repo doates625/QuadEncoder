@@ -38,7 +38,7 @@ float QuadEncoder::get_angle()
 	float angle = counts_copy * rad_per_cnt;
 	if (wrap_angle)
 	{
-		angle = Util::wrap(angle, -M_PI, +M_PI);
+		angle = CppUtil::wrap(angle, -M_PI, +M_PI);
 	}
 	return angle;
 }
