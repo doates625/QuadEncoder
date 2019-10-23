@@ -60,7 +60,9 @@ void QuadEncoder::zero()
  */
 void QuadEncoder::interrupt_A()
 {
-	counts = (channel_A == channel_B) ? counts + 1 : counts - 1;
+	int read_A = channel_A->read();
+	int read_B = channel_B->read();
+	counts = (read_A == read_B) ? counts + 1 : counts - 1;
 }
 
 /**
@@ -68,7 +70,9 @@ void QuadEncoder::interrupt_A()
  */
 void QuadEncoder::interrupt_B()
 {
-	counts = (channel_A == channel_B) ? counts - 1 : counts + 1;
+	int read_A = channel_A->read();
+	int read_B = channel_B->read();
+	counts = (read_A == read_B) ? counts - 1 : counts + 1;
 }
 
 /**
