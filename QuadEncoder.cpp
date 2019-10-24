@@ -23,6 +23,45 @@ QuadEncoder::QuadEncoder(
 	this->rad_per_cnt = 2.0f * M_PI / cnt_per_rev;
 	this->wrap_angle = wrap_angle;
 	this->counts = 0;
+	this->dynamic_io = false;
+}
+
+/**
+ * @brief Constructs quad encoder interface
+ * @param pin_channel_A ID of channel A input
+ * @param pin_channel_B ID of channel B input
+ * @param cnt_per_rev Resolution [counts per revolution]
+ * @param wrap_angle Wraps angle to range [-pi, +pi] if true
+ * 
+ * This constructor dynamically allocates the IO interfaces and deletes them
+ * on destruction.
+ */
+QuadEncoder::QuadEncoder(
+	Platform::pin_t pin_channel_A,
+	Platform::pin_t pin_channel_B,
+	float cnt_per_rev,
+	bool wrap_angle) :
+QuadEncoder(
+	new DigitalIn(pin_channel_A),
+	new DigitalIn(pin_channel_B),
+	cnt_per_rev,
+	wrap_angle)
+{
+	this->dynamic_io = true;
+}
+
+/**
+ * @brief Destructs quad encoder interface
+ * 
+ * Deletes IO interfaces if they were created with dynamic memory.
+ */
+QuadEncoder::~QuadEncoder()
+{
+	if (dynamic_io)
+	{
+		delete channel_A;
+		delete channel_B;
+	}
 }
 
 /**

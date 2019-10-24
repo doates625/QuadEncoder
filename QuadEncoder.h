@@ -15,6 +15,12 @@ public:
 		DigitalIn* channel_B,
 		float cnt_per_rev,
 		bool wrap_angle = false);
+	QuadEncoder(
+		Platform::pin_t pin_channel_A,
+		Platform::pin_t pin_channel_B,
+		float cnt_per_rev,
+		bool wrap_angle = false);
+	~QuadEncoder();
 	float get_angle();
 	void zero();
 	void interrupt_A();
@@ -26,4 +32,5 @@ protected:
 	float rad_per_cnt;
 	bool wrap_angle;
 	int32_t counts;
+	bool dynamic_io;
 };
