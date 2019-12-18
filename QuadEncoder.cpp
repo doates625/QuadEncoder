@@ -7,61 +7,22 @@
 
 /**
  * @brief Constructs quad encoder interface
- * @param channel_A Channel A input
- * @param channel_B Channel B input
- * @param cnt_per_rev Resolution [counts per revolution]
- * @param wrap_angle Wraps angle to range [-pi, +pi] if true
- */
-QuadEncoder::QuadEncoder(
-	DigitalIn* channel_A,
-	DigitalIn* channel_B,
-	float cnt_per_rev,
-	bool wrap_angle)
-{
-	this->channel_A = channel_A;
-	this->channel_B = channel_B;
-	this->rad_per_cnt = 2.0f * M_PI / cnt_per_rev;
-	this->wrap_angle = wrap_angle;
-	this->counts = 0;
-	this->dynamic_io = false;
-}
-
-/**
- * @brief Constructs quad encoder interface
  * @param pin_channel_A ID of channel A input
  * @param pin_channel_B ID of channel B input
  * @param cnt_per_rev Resolution [counts per revolution]
  * @param wrap_angle Wraps angle to range [-pi, +pi] if true
- * 
- * This constructor dynamically allocates the IO interfaces and deletes them
- * on destruction.
  */
 QuadEncoder::QuadEncoder(
 	Platform::pin_t pin_channel_A,
 	Platform::pin_t pin_channel_B,
 	float cnt_per_rev,
 	bool wrap_angle) :
-QuadEncoder(
-	new DigitalIn(pin_channel_A),
-	new DigitalIn(pin_channel_B),
-	cnt_per_rev,
-	wrap_angle)
+	channel_A(pin_channel_A),
+	channel_B(pin_channel_B)
 {
-	this->dynamic_io = true;
-}
-
-/**
- * @brief Destructs quad encoder interface
- * 
- * Deletes IO interfaces if they were created with dynamic memory.
- */
-QuadEncoder::~QuadEncoder()
-{
-	if (dynamic_io)
-	{
-		delete channel_A;
-		delete channel_B;
-	}
+	this->rad_per_cnt = 2.0f * M_PI / cnt_per_rev;
+	this->wrap_angle = wrap_angle;
+	this->counts = 0;
 }
 
 /**
@@ -99,8 +60,8 @@ void QuadEncoder::zero()
  */
 void QuadEncoder::interrupt_A()
 {
-	int read_A = channel_A->read();
-	int read_B = channel_B->read();
+	int read_A = channel_A.read();
+	int read_B = channel_B.read();
 	counts = (read_A == read_B) ? counts + 1 : counts - 1;
 }
 
@@ -109,8 +70,8 @@ void QuadEncoder::interrupt_A()
  */
 void QuadEncoder::interrupt_B()
 {
-	int read_A = channel_A->read();
-	int read_B = channel_B->read();
+	int read_A = channel_A.read();
+	int read_B = channel_B.read();
 	counts = (read_A == read_B) ? counts - 1 : counts + 1;
 }
 
